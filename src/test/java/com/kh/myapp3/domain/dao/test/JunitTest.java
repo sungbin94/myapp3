@@ -1,4 +1,4 @@
-package com.kh.myapp3.domain.dao.test;
+package com.kh.myapp3.test;
 
 import com.kh.myapp3.domain.Product;
 import com.kh.myapp3.domain.dao.ProductDAO;
@@ -10,10 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-//테스트 메소드의 실행순서
-//1)문자와 숫자 조합으로 실행순서를 결정
-//2)믈래스 레벨에 @TestMethodOrder , 메소드레벨 @Order로 결정
-
+// 테스트 메소드의 실행순서
+//1)문자와 숫자 조합으로 되어있으면 숫자의 오름차순으로 실행순서를 결정
+//2)클래스 레벨에 @TestMethodOrder , 메소드레벨 @Order로 결정
+//
 @Slf4j
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -24,24 +24,24 @@ public class JunitTest {
   private static Product testProduct;
 
   @BeforeAll
-  static void beforeAll() {
-   log.info("beforeAll called");
+  static void beforeAll(){
+    log.info("beforeAll() called");
   }
 
   @Test
   @Order(1)
   @DisplayName("상품등록")
-  void test1() {
+  void test1(){
     log.info("test1() called");
-    Product product = new Product(null,"의자",5,30000);
-    testProduct =  productDAO.save(product);
+    Product product = new Product(null,"의자",5,300000);
+    testProduct = productDAO.save(product);
     Assertions.assertThat(testProduct).isNotNull();
   }
 
   @Test
   @Order(2)
   @DisplayName("상품조회")
-  void test3() {
+  void test3(){
     log.info("test3() called");
     Product findedProduct = productDAO.findById(testProduct.getProductId());
     Assertions.assertThat(findedProduct).isEqualTo(testProduct);
@@ -50,13 +50,13 @@ public class JunitTest {
   @Test
   @Order(3)
   @DisplayName("상품수정")
-  void test2() {
+  void test2(){
     log.info("test2() called");
     Long productId = testProduct.getProductId();
-    Product product = new Product(testProduct.getProductId(), "책상",7,700000);
+    Product product = new Product(testProduct.getProductId(),"책상",7,700000);
     productDAO.update(productId,product);
 
-    Product findedProduct = productDAO.findById(testProduct.getProductId());
+    Product findedProduct = productDAO.findById(productId);
     Assertions.assertThat(findedProduct).isEqualTo(product);
   }
 
@@ -64,41 +64,38 @@ public class JunitTest {
   @Order(4)
   @DisplayName("목록")
   @Disabled
-  void test4() {
+  void test4(){
     log.info("test4() called");
     List<Product> products = productDAO.findAll();
     Assertions.assertThat(products.size()).isEqualTo(1);
-
   }
 
   @Test
   @Order(5)
   @DisplayName("삭제")
   void test5(){
-    log.info("test5{} called");
+    log.info("test4() called");
     productDAO.delete(testProduct.getProductId());
     Product findedProduct = productDAO.findById(testProduct.getProductId());
     Assertions.assertThat(findedProduct).isNull();
-
   }
 
   @BeforeEach
-  void beforeEach() {
+  void beforeEach(){
     log.info("beforeEach() called");
   }
 
   @AfterEach
-  void afterEach() {
+  void afterEach(){
     log.info("afterEach() called");
     List<Product> products = productDAO.findAll();
-    products.stream().forEach(product -> {
+    products.stream().forEach(product->{
       log.info("{}",product);
     });
   }
 
-
   @AfterAll
-  static void afterAll() {
+  static void afterAll(){
     log.info("afterAll() called");
   }
 }

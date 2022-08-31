@@ -77,14 +77,14 @@ public class ProductDAOImpl implements ProductDAO{
   @Override
   public Product findById(Long productId) {
     StringBuffer sql = new StringBuffer();
-    sql.append("select product_id, pname, quantity, price ");
-    sql.append("from product ");
-    sql.append("where product_id = ? ");
+    sql.append("select product_id as productId, pname, quantity, price ");
+    sql.append(  "from product ");
+    sql.append( "where product_id = ? ");
 
     Product product = null;
     try {
       product = jt.queryForObject(
-          sql.toString(), new BeanPropertyRowMapper<>(Product.class), productId);
+          sql.toString(),new BeanPropertyRowMapper<>(Product.class),productId);
     } catch (EmptyResultDataAccessException e) {
       log.info("삭제대상 상품이 없습니다 상품아이디={}",productId);
     }
@@ -97,10 +97,10 @@ public class ProductDAOImpl implements ProductDAO{
   public void update(Long productId, Product product) {
     StringBuffer sql = new StringBuffer();
     sql.append("update product ");
-    sql.append("set pname = ?, ");
-    sql.append ("quantity = ?, ");
-    sql.append ("price = ? ");
-    sql.append("where product_id = ? ");
+    sql.append("   set pname = ?, ");
+    sql.append("       quantity = ?, ");
+    sql.append("       price = ? ");
+    sql.append(" where product_id = ? ");
 
     jt.update(sql.toString(),product.getPname(),product.getQuantity(),product.getPrice(),productId);
   }
@@ -116,28 +116,28 @@ public class ProductDAOImpl implements ProductDAO{
   @Override
   public List<Product> findAll() {
     StringBuffer sql = new StringBuffer();
-    sql.append("select product_id  pname, quantity, price ");
-    sql.append("from product ");
+    sql.append("select product_id, pname, quantity, price ");
+    sql.append("  from product ");
 
     //case1) 자동매핑 sql결과 레코드와 동일한 구조의 java객체가 존재할경우
-   List<Product> result = jt.query(sql.toString(),new BeanPropertyRowMapper<>(Product.class));
+    List<Product> result = jt.query(sql.toString(),new BeanPropertyRowMapper<>(Product.class));
     //case2) 수동매핑 sql결과 레코드의 컬럼명과 java객체의 멤버이름이 다른경우 or 타입이 다른경우
 //    List<Product> result =
 //      jt.query(sql.toString(), new RowMapper<Product>() {
 //
-//      @Override
-//      public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
-//        Product product = new Product();
-//        product.setProductId(rs.getLong("product_id"));
-//        product.setQuantity(rs.getInt("quantity"));
-//        product.setPrice(rs.getInt("price"));
-//        return null;
-//      }
-//    });
+//        @Override
+//        public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
+//          Product product = new Product();
+//          product.setProductId(rs.getLong("product_id"));
+//          product.setQuantity(rs.getInt("quantity"));
+//          product.setPrice(rs.getInt("price"));
+//          return product;
+//        }
+//      });
     return result;
   }
 
-  //전체삭제
+  //전체 삭제
   @Override
   public void deleteAll() {
     String sql = "delete from product";
@@ -148,29 +148,9 @@ public class ProductDAOImpl implements ProductDAO{
   //상품아이디 생성
   @Override
   public Long generatePid() {
-    String sql = "select product_product_id_seq.nextval from dual;";
+    String sql = "select product_product_id_seq.nextval from dual";
     Long newProductId = jt.queryForObject(sql, Long.class);
     return newProductId;
-
   }
-  //  @Override
-//  public Integer save(Product product) {
-//    StringBuffer sql = new StringBuffer();
-//    sql.append("insert into product values(product_product_id_seq.nextval,?,?,?)");
-//
-//    KeyHolder keyHolder = new GeneratedKeyHolder();
-//    jt.update(
-//      con->{
-//        PreparedStatement pstmt = con.prepareStatement(sql.toString(),new String[]{"product_id"});
-//        pstmt.setString(1,product.getPname());
-//        pstmt.setInt(2,product.getQuantity());
-//        pstmt.setInt(3,product.getPrice());
-//        return pstmt;
-//      }
-//    , keyHolder);
-//
-//    Integer product_id = Integer.valueOf(keyHolder.getKeys().get("product_id").toString());
-//    return product_id;
-//  }
 }
 
