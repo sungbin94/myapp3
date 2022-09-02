@@ -28,24 +28,47 @@ public class ThymeLeafController {
     model.addAttribute("p2", p2);
 
     List<Person> personList = new ArrayList<>();
-    personList.add(p1);personList.add(p2);
+    personList.add(p1);
+    personList.add(p2);
     model.addAttribute("personList", personList);
 
     Map<String, Person> personMap = new LinkedHashMap<>();
-    personMap.put("1", p1);personMap.put("2", p2);
+    personMap.put("1", p1);
+    personMap.put("2", p2);
     model.addAttribute("personMap", personMap);
 
     Set<Person> personSet = new HashSet<>();
-    personSet.add(p1);personSet.add(p2);
-    model.addAttribute("personSet",personSet);
+    personSet.add(p1);
+    personSet.add(p2);
+    model.addAttribute("personSet", personSet);
 
     return "thyme/text";
   }
 
   @Data
   @AllArgsConstructor
-  static  class Person{
+  static class Person {
     private String name;
     private int age;
+  }
+
+  @GetMapping("/each")
+  public String each(Model model) {
+
+    List<Person> personList = new ArrayList<>();
+    personList.add(new Person("홍길동1", 10));
+    personList.add(new Person("홍길동2", 20));
+    personList.add(new Person("홍길동3", 30));
+
+    model.addAttribute("personList", personList);
+
+    return "/thyme/each";
+  }
+
+  //일반 for문
+  @GetMapping("/each2")
+  public String each2(){
+
+    return"/thyme/each2";
   }
 }
