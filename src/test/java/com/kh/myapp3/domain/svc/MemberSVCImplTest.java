@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Slf4j
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -24,7 +22,7 @@ class MemberSVCImplTest {
   @DisplayName("가입")
   @Order(1)
   void insert() {
-    member = new Member("test14@test.com","1234","별칭5");
+    member = new Member("test25@test.com","1234","별칭5");
 
     Member insertedMember = memberSVC.insert(member);
     log.info("insertedMember={}",insertedMember);
@@ -64,10 +62,10 @@ class MemberSVCImplTest {
   }
 
   @Test
-  @DisplayName("삭제")
+  @DisplayName("탈퇴")
   @Order(5)
   void del() {
-    memberSVC.del(member.getMemberId());
+    memberSVC.del(member.getMemberId(), member.getPw());
     Member findedMember = memberSVC.findById(member.getMemberId());
     Assertions.assertThat(findedMember).isNull();
   }
