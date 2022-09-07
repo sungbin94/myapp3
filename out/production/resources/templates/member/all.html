@@ -8,7 +8,6 @@
   <title>회원목록</title>
 </head>
 <body>
-  <div class="member-wrap">
     <h3>회원목록</h3>
     <hr>
     <table>
@@ -20,18 +19,7 @@
         <th>별칭</th>
       </tr>
       </thead>
-      <tbodt>
-        <tr th:each="member : ${list}">
-          <td th:text="${member.memberId}">1</td>
-         <td><a href="/member/1" th:href="@{/member/{id}"></a></td>
-          <td th:text="${member.memberId}">1</td>
-          <td th:text="${member.memberId}">1</td>
-
-        </tr>
-      </tbodt>
     </table>
-
-  </div>
 
 </body>
 </html>

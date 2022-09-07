@@ -1,7 +1,6 @@
-package com.kh.myapp3.domain.svc;
+package com.kh.myapp3.domain.admin;
 
 import com.kh.myapp3.domain.Member;
-import com.kh.myapp3.domain.dao.MemberDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,9 +10,9 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MemberSVCImpl implements MemberSVC {
+public class AdminMemberSVCImpl implements AdminMemberSVC {
 
-  private final MemberDAO memberDAO;
+  private final AdminMemberDAO adminmemberDAO;
 
   /**
    * 가입
@@ -25,10 +24,10 @@ public class MemberSVCImpl implements MemberSVC {
   public Member insert(Member member) {
 
     //회원 아이디 생성
-    Long generateMemberId = memberDAO.generateMemberId();
+    Long generateMemberId = adminmemberDAO.generateMemberId();
     member.setMemberId(generateMemberId);
-    memberDAO.insert(member);
-    return memberDAO.findById(generateMemberId);
+    adminmemberDAO.insert(member);
+    return adminmemberDAO.findById(generateMemberId);
   }
 
   /**
@@ -39,7 +38,7 @@ public class MemberSVCImpl implements MemberSVC {
    */
   @Override
   public Member findById(Long memberId) {
-    return memberDAO.findById(memberId);
+    return adminmemberDAO.findById(memberId);
   }
 
   /**
@@ -51,7 +50,7 @@ public class MemberSVCImpl implements MemberSVC {
    */
   @Override
   public int update(Long memberId, Member member) {
-    int cnt = memberDAO.update(memberId, member);
+    int cnt = adminmemberDAO.update(memberId, member);
     log.info("수정건수={}",cnt);
     return cnt;
   }
@@ -60,14 +59,22 @@ public class MemberSVCImpl implements MemberSVC {
    * 탈퇴
    *
    * @param memberId 아이디
-   * @param pw 비밀번호
    * @return 삭제건수
    */
   @Override
-  public int del(Long memberId, String pw) {
-    int cnt = memberDAO.del(memberId, pw);
+  public int del(Long memberId) {
+    int cnt = adminmemberDAO.del(memberId);
     log.info("삭제건수={}", cnt);
     return cnt;
   }
 
+  /**
+   * 목록
+   *
+   * @return 회원전체
+   */
+  @Override
+  public List<Member> all() {
+    return adminmemberDAO.all();
+  }
 }
