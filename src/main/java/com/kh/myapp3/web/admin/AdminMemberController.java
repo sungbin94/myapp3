@@ -23,16 +23,21 @@ public class AdminMemberController {
 
   //등록화면
   @GetMapping("/add")
-  public String addForm(){
-
+  public String addForm(Model model) {
+    model.addAttribute("addForm",new AddForm());
     return "admin/member/addForm";  //가입 화면
   }
   //등록처리	POST	/members/add
   @PostMapping("/add")
-  public String add(AddForm addForm){
+  public String add(@ModelAttribute AddForm addForm){
     //검증
-    log.info("addForm={}",addForm);
+    log.info("addForm={}", addForm);
+    if (addForm.getEmail().trim().length() == 0) {
+      return "admin/member/addForm";
 
+
+    }
+    //회원등록
     Member member = new Member();
     member.setEmail(addForm.getEmail());
     member.setPw(addForm.getPw());
@@ -91,11 +96,11 @@ public class AdminMemberController {
   }
 
   //삭제처리
-  @PostMapping("/{id}/del")
+  @GetMapping("/{id}/del")
   public String del(@PathVariable("id") Long id){
     int deletedRow = adminMemberSVC.del(id);
     if(deletedRow == 0){
-      return "redirect:/admin/members/"+id;
+      return "redirect:/admin/members/"+id; //회원 상세화면
     }
     return "redirect:/admin/members/all"; //회원 목록
   }

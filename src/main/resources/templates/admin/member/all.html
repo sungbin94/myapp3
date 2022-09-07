@@ -34,7 +34,7 @@
       </tr>
       </thead>
       <tbody>
-        <tr th:each="rec :${list}" th:data-member-id="{rec.memberId}" th:onclick="|location.href = '@{/admin/members/{id}(id=${rec.memberId})}'|">
+        <tr th:each="rec :${list}" th:data-member-id="${rec.memberId}">
           <td>[[${recStat.count}]]</td>
 <!--          <td><a th:href="@{|/admin/members/${rec.memberId}|}">[[${rec.memberId}]]</a></td>-->
           <td><!--<a th:href="@{/admin/members/{id}(id=${rec.memberId})}">-->[[${rec.memberId}]]<!--</a>--></td>
@@ -44,11 +44,21 @@
         </tr>
       </tbody>
     </table>
-    <script th:inline="javascript">
+    <div><button type="button" id="addBtn">등록</button></div>
+    <script>
+    //등록
+    addBtn.addEventListener('click', e =>{
+      console.log('등록');
+      location.href = `/admin/members/add`;
+    });
+    //행클릭시 상세조회
+
+
       const $tbody = document.querySelector("table tbody");
       $tbody.addEventListener('click',e=>{
-        if(e.target.tagName == 'TR'){
-          console.log(e.target.parentElement.dataset.memberId);
+        if(e.target.tagName == 'TD'){
+          const memberId = e.target.parentElement.dataset.memberId;
+          location.href = `/admin/members/+ ${memberId}`;
         }
       });
 
