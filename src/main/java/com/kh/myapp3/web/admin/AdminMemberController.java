@@ -31,6 +31,7 @@ public class AdminMemberController {
   @PostMapping("/add")
   public String add(@ModelAttribute AddForm addForm){
     //검증
+//    model.addAttribute("addForm",addForm);
     log.info("addForm={}", addForm);
     if (addForm.getEmail().trim().length() == 0) {
       return "admin/member/addForm";
