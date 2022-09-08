@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -23,21 +25,71 @@ public class AdminMemberController {
 
   //등록화면
   @GetMapping("/add")
-  public String addForm(Model model) {
-    model.addAttribute("addForm",new AddForm());
+  public String addForm(Model model){
+    model.addAttribute("form", new AddForm());
     return "admin/member/addForm";  //가입 화면
   }
   //등록처리	POST	/members/add
   @PostMapping("/add")
-  public String add(@ModelAttribute AddForm addForm){
+  public String add(@Valid @ModelAttribute("form") AddForm addForm, BindingResult bindingResult){
+
+    log.info("addForm={}",addForm);
+
     //검증
-//    model.addAttribute("addForm",addForm);
-    log.info("addForm={}", addForm);
-    if (addForm.getEmail().trim().length() == 0) {
+    if(bindingResult.hasErrors()){
+      log.info("errors={}",bindingResult);
       return "admin/member/addForm";
-
-
     }
+    //회원아이디 중복체크
+    Boolean isExist = adminMemberSVC.dupChkOfMemberEmail(addForm.getEmail());
+    if (isExist) {
+      bindingResult.rejectValue("email","dup.email","동일한 이메일이 존재합니다.");
+      return "admin/member/addForm";
+    }
+
+    //회원등록
+    Member member = new Member();
+    member.setEmail(addForm.getEmail());
+    member.setPw(addForm.getPw());
+    member.setNickname(addForm.getNickname());
+    Member insertedMember = adminMemberSVC.insert(member);
+
+    Long id = insertedMember.getMemberId();
+    return "redirect:/admin/members/{id}"; //회원 상세
+  }
+
+  public String add2(@Valid @ModelAttribute AddForm addForm, BindingResult bindingResult){
+    //검증
+    //model.addAttribute("addForm", addForm);
+    log.info("addForm={}",addForm);
+//    if(addForm.getEmail() == null || addForm.getEmail().trim().length() == 0){
+//      return "admin/member/addForm_old";
+//    }
+    if(bindingResult.hasErrors()){
+      log.info("errors={}",bindingResult);
+      return "admin/member/addForm_old";
+    }
+
+    //비즈니스 규칙
+    //1)이메일에 @가 없으면 오류
+    if(!addForm.getEmail().contains("@")){
+
+      bindingResult.rejectValue("email","emailChk1","이메일형식에 맞지 않습니다.");
+      return "admin/member/addForm_old";
+    }
+    if(addForm.getEmail().length() > 5){
+      bindingResult.rejectValue("email","emailChk2",new String[]{"0","5"},"이메일 길이가 초과!");
+      return "admin/member/addForm_old";
+    }
+    //2) objectError 2개이상의 필드 분석을 통해 오류검증
+    //   비밀번호,별칭의 자리수가 모두가 5미만인경우
+    if(addForm.getPw().trim().length() < 5 && addForm.getNickname().trim().length() < 5){
+      bindingResult.reject("memberChk",new String[]{"5"},"비밀번호,별칭의 자리수가 모두 5 미만입니다.");
+      return "admin/member/addForm_old";
+    }
+
+
+
     //회원등록
     Member member = new Member();
     member.setEmail(addForm.getEmail());
@@ -62,7 +114,7 @@ public class AdminMemberController {
     memberForm.setCdate(findedMember.getCdate());
     memberForm.setUdate(findedMember.getUdate());
 
-    model.addAttribute("MemberForm",memberForm);
+    model.addAttribute("memberForm",memberForm);
 
     return "admin/member/memberForm"; //회원 상세화면
   }
@@ -78,10 +130,10 @@ public class AdminMemberController {
     editForm.setPw(findedMember.getPw());
     editForm.setNickname(findedMember.getNickname());
 
-    model.addAttribute("editForm", findedMember);
+    model.addAttribute("editForm", editForm);
     return "admin/member/editForm"; //회원 수정화면
   }
-  //수정처리
+  //수정처리	POST	/members/{id}/edit
   @PostMapping("/{id}/edit")
   public String edit(@PathVariable("id") Long id, EditForm editForm){
 
@@ -101,11 +153,11 @@ public class AdminMemberController {
   public String del(@PathVariable("id") Long id){
     int deletedRow = adminMemberSVC.del(id);
     if(deletedRow == 0){
-      return "redirect:/admin/members/"+id; //회원 상세화면
+      return "redirect:/admin/members/{id}"; //회원 상세화면
     }
     return "redirect:/admin/members/all"; //회원 목록
   }
-  //목록화면
+  //목록화면	GET	/members
   @GetMapping("/all")
   public String all(Model model){
 
