@@ -142,7 +142,11 @@ public class AdminMemberController {
   }
   //수정처리	POST	/members/{id}/edit
   @PostMapping("/{id}/edit")
-  public String edit(@PathVariable("id") Long id, EditForm editForm){
+  public String edit(
+      @PathVariable("id") Long id,
+      @Valid @ModelAttribute("form") EditForm editForm,
+      BindingResult bindingResult
+  ){
 
     Member member = new Member();
     member.setPw(editForm.getPw());
