@@ -137,7 +137,7 @@ public class AdminMemberController {
     editForm.setPw(findedMember.getPw());
     editForm.setNickname(findedMember.getNickname());
 
-    model.addAttribute("editForm", editForm);
+    model.addAttribute("form", editForm);
     return "admin/member/editForm"; //회원 수정화면
   }
   //수정처리	POST	/members/{id}/edit
