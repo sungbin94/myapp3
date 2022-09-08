@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -31,7 +32,12 @@ public class AdminMemberController {
   }
   //등록처리	POST	/members/add
   @PostMapping("/add")
-  public String add(@Valid @ModelAttribute("form") AddForm addForm, BindingResult bindingResult){
+  public String add(
+      @Valid @ModelAttribute("form") AddForm addForm,
+      BindingResult bindingResult,
+      RedirectAttributes redirectAttributes //리다이렉트할때 정보를 유지하기위해 사용
+
+  ){
 
     log.info("addForm={}",addForm);
 
@@ -55,6 +61,7 @@ public class AdminMemberController {
     Member insertedMember = adminMemberSVC.insert(member);
 
     Long id = insertedMember.getMemberId();
+    redirectAttributes.addAttribute("id", id);
     return "redirect:/admin/members/{id}"; //회원 상세
   }
 
@@ -114,7 +121,7 @@ public class AdminMemberController {
     memberForm.setCdate(findedMember.getCdate());
     memberForm.setUdate(findedMember.getUdate());
 
-    model.addAttribute("memberForm",memberForm);
+    model.addAttribute("form",memberForm);
 
     return "admin/member/memberForm"; //회원 상세화면
   }
