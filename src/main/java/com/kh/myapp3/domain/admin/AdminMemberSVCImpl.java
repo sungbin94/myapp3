@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminMemberSVCImpl implements AdminMemberSVC {
 
-  private final AdminMemberDAO adminmemberDAO;
+  private final AdminMemberDAO adminMemberDAO;
 
   /**
    * 가입
@@ -24,10 +24,10 @@ public class AdminMemberSVCImpl implements AdminMemberSVC {
   public Member insert(Member member) {
 
     //회원 아이디 생성
-    Long generateMemberId = adminmemberDAO.generateMemberId();
+    Long generateMemberId = adminMemberDAO.generateMemberId();
     member.setMemberId(generateMemberId);
-    adminmemberDAO.insert(member);
-    return adminmemberDAO.findById(generateMemberId);
+    adminMemberDAO.insert(member);
+    return adminMemberDAO.findById(generateMemberId);
   }
 
   /**
@@ -38,7 +38,7 @@ public class AdminMemberSVCImpl implements AdminMemberSVC {
    */
   @Override
   public Member findById(Long memberId) {
-    return adminmemberDAO.findById(memberId);
+    return adminMemberDAO.findById(memberId);
   }
 
   /**
@@ -50,7 +50,7 @@ public class AdminMemberSVCImpl implements AdminMemberSVC {
    */
   @Override
   public int update(Long memberId, Member member) {
-    int cnt = adminmemberDAO.update(memberId, member);
+    int cnt = adminMemberDAO.update(memberId, member);
     log.info("수정건수={}",cnt);
     return cnt;
   }
@@ -63,7 +63,7 @@ public class AdminMemberSVCImpl implements AdminMemberSVC {
    */
   @Override
   public int del(Long memberId) {
-    int cnt = adminmemberDAO.del(memberId);
+    int cnt = adminMemberDAO.del(memberId);
     log.info("삭제건수={}", cnt);
     return cnt;
   }
@@ -75,7 +75,7 @@ public class AdminMemberSVCImpl implements AdminMemberSVC {
    */
   @Override
   public List<Member> all() {
-    return adminmemberDAO.all();
+    return adminMemberDAO.all();
   }
 
   /**
@@ -86,6 +86,7 @@ public class AdminMemberSVCImpl implements AdminMemberSVC {
    */
   @Override
   public Boolean dupChkOfMemberEmail(String email) {
-    return null;
+
+    return adminMemberDAO.dupChkOfMemberEmail(email);
   }
 }

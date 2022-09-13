@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 @Data
 public class EditForm {
-  public Long MemberId;
+  private Long memberId;      //아이디
   private String email;       //이메일
 
   @Size(min = 0, max=10)

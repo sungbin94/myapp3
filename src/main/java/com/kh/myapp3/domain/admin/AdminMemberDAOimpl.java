@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @Repository
 @AllArgsConstructor
-public class AdminMemberDAOimpl implements AdminMemberDAO {
+public class AdminMemberDAOimpl implements AdminMemberDAO{
   private final JdbcTemplate jt;
 
   /**
@@ -81,11 +81,11 @@ public class AdminMemberDAOimpl implements AdminMemberDAO {
     StringBuffer sql = new StringBuffer();
     sql.append("update member ");
     sql.append("   set nickname = ?, ");
+    sql.append("       pw = ?, ");
     sql.append("       udate = systimestamp ");
     sql.append(" where member_id = ? ");
-    sql.append("   and pw = ? ");
 
-    result = jt.update(sql.toString(),member.getNickname(),memberId,member.getPw());
+    result = jt.update(sql.toString(),member.getNickname(),member.getPw(),memberId);
     return result;
   }
 
@@ -128,6 +128,6 @@ public class AdminMemberDAOimpl implements AdminMemberDAO {
   public Boolean dupChkOfMemberEmail(String email) {
     String sql = "select count(email) from member where email = ? ";
     Integer rowCount = jt.queryForObject(sql, Integer.class, email);
-    return rowCount == 1? true : false;
+    return rowCount == 1 ? true : false;
   }
 }

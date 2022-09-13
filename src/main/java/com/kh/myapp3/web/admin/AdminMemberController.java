@@ -35,8 +35,7 @@ public class AdminMemberController {
   public String add(
       @Valid @ModelAttribute("form") AddForm addForm,
       BindingResult bindingResult,
-      RedirectAttributes redirectAttributes //리다이렉트할때 정보를 유지하기위해 사용
-
+      RedirectAttributes redirectAttributes // 리다이렉트할때 정보를 유지하기위해사용
   ){
 
     log.info("addForm={}",addForm);
@@ -48,11 +47,10 @@ public class AdminMemberController {
     }
     //회원아이디 중복체크
     Boolean isExist = adminMemberSVC.dupChkOfMemberEmail(addForm.getEmail());
-    if (isExist) {
-      bindingResult.rejectValue("email","dup.email","동일한 이메일이 존재합니다.");
+    if(isExist){
+      bindingResult.rejectValue("email","dup.email", "동일한 이메일이 존재합니다.");
       return "admin/member/addForm";
     }
-
     //회원등록
     Member member = new Member();
     member.setEmail(addForm.getEmail());
@@ -61,7 +59,8 @@ public class AdminMemberController {
     Member insertedMember = adminMemberSVC.insert(member);
 
     Long id = insertedMember.getMemberId();
-    redirectAttributes.addAttribute("id", id);
+    redirectAttributes.addAttribute("id",id);
+
     return "redirect:/admin/members/{id}"; //회원 상세
   }
 
@@ -145,8 +144,13 @@ public class AdminMemberController {
   public String edit(
       @PathVariable("id") Long id,
       @Valid @ModelAttribute("form") EditForm editForm,
-      BindingResult bindingResult
-  ){
+      BindingResult bindingResult){
+
+    //검증
+    if(bindingResult.hasErrors()){
+      log.info("errors={}",bindingResult);
+      return "admin/member/editForm";
+    }
 
     Member member = new Member();
     member.setPw(editForm.getPw());
