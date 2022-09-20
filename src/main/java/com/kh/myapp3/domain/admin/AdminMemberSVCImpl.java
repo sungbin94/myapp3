@@ -1,6 +1,8 @@
-package com.kh.myapp3.domain.admin;
+package com.kh.myapp3.domain.dao.admin;
 
-import com.kh.myapp3.domain.Member;
+import com.kh.myapp3.domain.dao.Member;
+import com.kh.myapp3.domain.admin.AdminMemberDAO;
+import com.kh.myapp3.domain.admin.AdminMemberSVC;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
